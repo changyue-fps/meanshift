@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 from argparse import ArgumentParser
 from mean_shift import MeanShift
@@ -44,6 +45,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     data = read_data(args.data)
+
+    start_time = time.time()
     mean_shift = MeanShift(data, args.sigma, CLUSTERING_EPS)
     clusters = mean_shift.cluster()
+    end_time = time.time()
+    print(f'MeanShift run time {end_time - start_time} seconds.')
+
     plot_clusters(clusters)

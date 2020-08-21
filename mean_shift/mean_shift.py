@@ -23,18 +23,27 @@ class MeanShift:
                     continue
 
                 point_to_shift = builder.shifted_point(i)
-                new_point = np.zeros(point_to_shift.shape)
-                weights = 0.0
-                for point in self._points:
-                    dist = compute_euclidean_distance(point_to_shift, point)
 
-                    # Points within 3*sigma distance contribute to weight computation.
-                    if dist <= 3 * self._sigma:
-                        weight = compute_gaussian(dist, self._sigma)
-                        new_point += point * weight
-                        weights += weight
+                # Vectorized computation to speed up clustering.
+                dists = np.sqrt(np.sum(np.square(self._points - point_to_shift), axis=1))
+                gaussian_weights = compute_gaussian(dists, self._sigma)
+                gaussian_weights = gaussian_weights * (dists <= 3 * self._sigma)
+                weights = np.tile(gaussian_weights, (point_to_shift.shape[0], 1))
+                new_point = np.multiply(weights.transpose(), self._points).sum(axis=0) / np.sum(gaussian_weights)
                 
-                new_point /= weights
+                #new_point = np.zeros(point_to_shift.shape)
+                #weights = 0.0
+                #for point in self._points:
+                #    dist = compute_euclidean_distance(point_to_shift, point)
+                #
+                #    # Points within 3*sigma distance contribute to weight computation.
+                #    if dist <= 3 * self._sigma:
+                #        weight = compute_gaussian(dist, self._sigma)
+                #        new_point += point * weight
+                #        weights += weight
+                #
+                #new_point /= weights
+
                 builder.shift_point(i, new_point)
 
         return builder.build_clusters()
