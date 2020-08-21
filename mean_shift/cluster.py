@@ -1,21 +1,29 @@
 import numpy as np
 
 class Cluster:
+    """
+    Class represents a set of points that belong to the same cluster.
+    Cluster contains data points and centroid.
+    """
+
     def __init__(self, centroid):
-        assert isinstance(centroid, np.ndarray), 'Centroid should be type `numpy.ndarray`'
-        assert centroid.ndim == 1, 'Cenroid should be a one-dimensional array'
+        assert isinstance(centroid, np.ndarray), 'Centroid should be type `numpy.ndarray`.'
 
         self._centroid = centroid
-        self._points = np.empty((0, centroid.shape[0]))
-    
+        self._points = []
+
+
+    def add_point(self, point):
+        assert isinstance(point, np.ndarray), 'Point should be type `numpy.ndarray`.'
+
+        self._points.append(point)
+
+
     @property
     def centroid(self):
         return self._centroid
 
-    def add_point(self, point):
-        self.points = np.vstack((self.points, point))
-    
-    def compute_sse(self):
-        mat = self.points - self.centroid
-        return np.sqrt(np.sum(np.square(mat)))
-        
+
+    @property
+    def points(self):
+        return self._points
