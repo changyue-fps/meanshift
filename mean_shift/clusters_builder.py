@@ -10,7 +10,7 @@ class ClustersBuilder:
 
     def __init__(self, points, eps):
         self._original_points = points
-        self._shifted_points = points
+        self._shifted_points = np.copy(points)
         self._shifting = np.full(points.shape[0], True, dtype=bool)
         self._cluster_eps = eps
         self._shifting_eps = eps / 10.0
