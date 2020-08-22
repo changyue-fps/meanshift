@@ -7,14 +7,14 @@ class Cluster:
     """
 
     def __init__(self, centroid):
-        assert isinstance(centroid, np.ndarray), 'Centroid should be type `numpy.ndarray`.'
-
         self._centroid = centroid
         self._points = []
 
 
     def add_point(self, point):
-        assert isinstance(point, np.ndarray), 'Point should be type `numpy.ndarray`.'
+        """
+        Add `point` to the cluster.
+        """
 
         self._points.append(point)
 

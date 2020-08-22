@@ -5,7 +5,7 @@ import numpy as np
 import time
 
 from argparse import ArgumentParser
-from mean_shift import MeanShift
+from mean_shift.mean_shift import MeanShift
 
 
 CLUSTERING_EPS = 1e-6
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     data = read_data(args.data)
 
     start_time = time.time()
-    mean_shift = MeanShift(data, args.sigma, CLUSTERING_EPS)
+    mean_shift = MeanShift(data.T, args.sigma, CLUSTERING_EPS)
     clusters = mean_shift.cluster()
     end_time = time.time()
     print(f'MeanShift run time {end_time - start_time} seconds.')
