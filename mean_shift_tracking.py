@@ -24,12 +24,12 @@ def on_mouse_event(event, x, y, flags, param):
     elif event == cv.EVENT_MOUSEMOVE:
         if draw:
             image_drew = param.copy()
-            cv.rectangle(image_drew, upper_left, (x, y), RECTANGLE_COLOR)
+            cv.rectangle(image_drew, upper_left, (x, y), RECTANGLE_COLOR, 2)
     elif event == cv.EVENT_LBUTTONUP:
         draw = False
         lower_right = (x, y)
         image_drew = param.copy()
-        cv.rectangle(image_drew, upper_left, (x, y), RECTANGLE_COLOR)
+        cv.rectangle(image_drew, upper_left, (x, y), RECTANGLE_COLOR, 2)
 
 
 def initialize_window(initial_frame):
@@ -53,7 +53,7 @@ def track_object(filename):
     vc = cv.VideoCapture(filename)
 
     # Read the first frame
-    retval, frame = cv.read()
+    retval, frame = vc.read()
     if not retval:
         print(f'Failed to read video frames from file {filename}')
         return
@@ -75,8 +75,9 @@ def track_object(filename):
 
     term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
 
+    cv.namedWindow('tracked', cv.WINDOW_NORMAL)
     while True:
-        retval, frame = cap.read()
+        retval, frame = vc.read()
         if not retval:
             break
 
@@ -84,8 +85,8 @@ def track_object(filename):
         dst = cv.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
         retval, track_window = cv.meanShift(dst, track_window, term_crit)
         x,y,w,h = track_window
-        img2 = cv.rectangle(frame, (x, y), (x+w, y+h), 255, 2)
-        cv.imshow('tracked', img2)
+        image = cv.rectangle(frame, (x, y), (x+w, y+h), RECTANGLE_COLOR, 2)
+        cv.imshow('tracked', image)
 
         k = cv.waitKey(60) & 0xff
         if k == 27:
